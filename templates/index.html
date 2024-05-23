@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<div align="center">
+<form>
+</form>
+</div>
+<div align="center">
+<h1>Image Colorization</h1>
+<p>Press The Button to Colorize The Images</p>
+<button id="capture" onclick="colorizePhoto()">Color</button>
+<div id="captureAlert" class="alert" role="alert" style="display: none;">
+</div>
+<script>
+let colorButton = document.getElementById('capture');
+let isButtonEnabled = true;
+
+function enableColorButton() {
+	isButtonEnabled = true;
+	colorButton.disabled = false;
+}
+
+function colorizePhoto() {
+	if (!isButtonEnabled) {
+		return;
+	}
+
+	colorButton.disabled = true;
+	isButtonEnabled = false;
+	const alertElement = document.getElementById('captureAlert');
+
+	fetch('/color', {
+		method: 'POST'
+	})
+	.then(response => response.json())
+	.then(data => {
+		console.log(data);
+		enableColorButton();
+		alertElement.className = 'alert alert-success'
+		alertElement.textContent = 'Images colorized.'
+
+		enableCaptureButton();
+	});
+	alertElement.style.display = 'block';
+
+	setTimeout(() => {
+		alertElement.style.display = 'none';
+	}, 5000);
+}
+</script>
+{% endblock %}
